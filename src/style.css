@@ -53,7 +53,8 @@ main {
   font-weight: 500;
 }
 .weather-app-details strong {
-  color: #7073b1;
+  color: #6c70b9;
+  font-weight: bold;
 }
 
 .weather-data {
@@ -73,7 +74,7 @@ main {
   height: 88px;
 }
 .weather-app-unit {
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 20px;
 }
 footer {
