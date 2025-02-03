@@ -9,8 +9,6 @@ function updateWeather(response) {
   let date = new Date(response.data.time * 1000);
   let IconElement = document.querySelector("#icon-img");
 
-  IconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
-
   cityElement.innerHTML = response.data.city;
 
   timeElememt.innerHTML = formatDate(date);
@@ -18,6 +16,7 @@ function updateWeather(response) {
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed} km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
+  IconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
 }
 function formatDate(date) {
   let minutes = date.getMinutes();
@@ -34,7 +33,7 @@ function formatDate(date) {
   let day = days[date.getDay()];
 
   if (minutes < 10) {
-    mintues = `0${minutes}`;
+    minutes = `0${minutes}`;
   }
   return `${day} ${hours}:${minutes}`;
 }
@@ -51,7 +50,32 @@ function handleSearchSubmit(event) {
   searchCity(searchInput.value);
 }
 
+function displayForecast() {
+  let forecastHtml = "";
+
+  let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
+  days.forEach(function (day) {
+    forecastHtml =
+      forecastHtml +
+      `
+<div class="weather-forecaste-day">
+   <div class="weather-forecast-date">${day}</div>
+   <div class="weather-forecast-icon">⛅</div>
+   <div class="weather-forecast-temp">
+     <div class="weather-forecast-temperature">
+       <strong>2°</strong>
+     </div>
+     <div class="weather-forecast-temperature">-1°</div>
+   </div>
+ </div>
+`;
+  });
+
+  forecastElement.innerHTML = forecastHtml;
+}
+let forecastElement = document.querySelector("#forecast");
 let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
 
 searchCity("Paris");
+displayForecast();
