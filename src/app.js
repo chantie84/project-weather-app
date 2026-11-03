@@ -1,3 +1,28 @@
+// The icon_url returned by the SheCodes API points to an S3 bucket that no
+// longer exists, so map the API's icon name to an equivalent hosted icon.
+function getIconUrl(condition) {
+  let codes = {
+    "clear-sky": "01",
+    "few-clouds": "02",
+    "scattered-clouds": "03",
+    "broken-clouds": "04",
+    "shower-rain": "09",
+    rain: "10",
+    thunderstorm: "11",
+    snow: "13",
+    mist: "50",
+  };
+  let icon = condition.icon || "";
+  let isNight = icon.endsWith("-night");
+  let name = icon.replace(/-(day|night)$/, "");
+  let code = codes[name];
+
+  if (!code) {
+    return condition.icon_url;
+  }
+  return `https://openweathermap.org/img/wn/${code}${isNight ? "n" : "d"}@2x.png`;
+}
+
 function updateWeather(response) {
   let temperatureElement = document.querySelector("#temperature");
   let temperature = response.data.temperature.current;
@@ -16,7 +41,7 @@ function updateWeather(response) {
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windSpeedElement.innerHTML = `${response.data.wind.speed} km/h`;
   temperatureElement.innerHTML = Math.round(temperature);
-  IconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />`;
+  IconElement.innerHTML = `<img src="${getIconUrl(response.data.condition)}" alt="${response.data.condition.description}" class="weather-app-icon" />`;
 
   getForecast(response.data.city);
 }
@@ -74,7 +99,7 @@ function displayForecast(response) {
         `
 <div class="weather-forecaste-day">
    <div class="weather-forecast-date">${formatDay(day.time)}</div>
-   <img src="${day.condition.icon_url}" class="weather-forecast-icon" />
+   <img src="${getIconUrl(day.condition)}" alt="${day.condition.description}" class="weather-forecast-icon" />
    <div class="weather-forecast-temp">
      <div class="weather-forecast-temperature">
        <strong>${Math.round(day.temperature.maximum)}°</strong>
